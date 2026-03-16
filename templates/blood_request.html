@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Blood - Blood Aid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f8f9fa 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .request-container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            animation: slideUp 0.5s ease;
+            border: 1px solid rgba(220, 53, 69, 0.1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emergency-banner {
+            background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        .emergency-icon {
+            font-size: 40px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .emergency-text h3 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .emergency-text p {
+            opacity: 0.9;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 50px;
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .logo h2 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc3545;
+            z-index: 10;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px 15px 15px 45px;
+            font-size: 15px;
+            transition: all 0.3s;
+            width: 100%;
+            background: white;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+            outline: none;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc3545' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col-md-6 {
+            width: 50%;
+            padding: 0 10px;
+        }
+
+        .btn-submit {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            background: #bb2d3b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit i {
+            font-size: 18px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0 20px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .info-box h5 {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .info-box ul {
+            margin-bottom: 0;
+            color: #666;
+            font-size: 14px;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 5px;
+        }
+
+        .info-box i {
+            color: #dc3545;
+            margin-right: 8px;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .back-home a:hover {
+            color: #dc3545;
+        }
+
+        .back-home i {
+            margin-right: 5px;
+        }
+
+        .alert {
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .request-card {
+                padding: 30px 20px;
+            }
+
+            .col-md-6 {
+                width: 100%;
+            }
+
+            .emergency-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo i {
+                width: 80px;
+                height: 80px;
+                line-height: 80px;
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="request-container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-{% if category == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Emergency Banner -->
+        <div class="emergency-banner">
+            <div class="emergency-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="emergency-text">
+                <h3>Emergency Blood Request</h3>
+                <p>For urgent blood needs, please provide accurate information. Donors will contact you directly.</p>
+            </div>
+        </div>
+
+        <!-- Request Card -->
+        <div class="request-card">
+            <div class="logo">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h2>Request Blood</h2>
+                <p>Fill out the form below to request blood</p>
+            </div>
+
+            <form action="/request_blood" method="POST" id="requestForm">
+                <!-- Patient Name -->
+                <div class="form-group">
+                    <label class="form-label">Patient Name</label>
+                    <div class="input-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text"
+                               name="patient_name"
+                               class="form-control"
+                               placeholder="Enter patient's full name"
+                               required
+                               minlength="3"
+                               maxlength="100">
+                    </div>
+                </div>
+
+                <!-- Blood Group and Phone -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Blood Group Needed</label>
+                            <div class="input-group">
+                                <i class="fas fa-tint input-icon"></i>
+                                <select name="blood_group" class="form-select" required>
+                                    <option value="" disabled selected>Select Blood Group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Contact Number</label>
+                            <div class="input-group">
+                                <i class="fas fa-phone input-icon"></i>
+                                <input type="tel"
+                                       name="phone"
+                                       class="form-control"
+                                       placeholder="01XXXXXXXXX"
+                                       required
+                                       pattern="01[3-9][0-9]{8}"
+                                       maxlength="11"
+                                       id="phone">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location/Hospital -->
+                <div class="form-group">
+                    <label class="form-label">Hospital/Location</label>
+                    <div class="input-group">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <input type="text"
+                               name="location"
+                               class="form-control"
+                               placeholder="e.g. Dhaka Medical College, Square Hospital"
+                               required
+                               minlength="5">
+                    </div>
+                    <small class="text-muted">Provide the full address for donors to find you easily</small>
+                </div>
+
+                <!-- Additional Notes (Optional) -->
+                <div class="form-group">
+                    <label class="form-label">Additional Notes (Optional)</label>
+                    <div class="input-group">
+                        <i class="fas fa-comment input-icon"></i>
+                        <textarea name="notes"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Any specific requirements or instructions for donors"
+                                  style="padding-top: 15px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Information Box -->
+                <div class="info-box">
+                    <h5><i class="fas fa-info-circle me-2"></i>Important Information</h5>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Your request will be visible to all registered donors</li>
+                        <li><i class="fas fa-check-circle"></i> Donors will contact you directly via phone</li>
+                        <li><i class="fas fa-check-circle"></i> Please keep your phone active for calls</li>
+                        <li><i class="fas fa-check-circle"></i> Update the request if blood is no longer needed</li>
+                        <li><i class="fas fa-check-circle"></i> For emergencies, also call the national helpline: 999</li>
+                    </ul>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Blood Request
+                </button>
+            </form>
+
+            <!-- Back to Home -->
+            <div class="back-home">
+                <a href="/">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Phone number validation
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
+        });
+
+        // Form validation
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('phone').value;
+            const location = document.querySelector('input[name="location"]').value;
+
+            if (phone.length !== 11) {
+                e.preventDefault();
+                alert('Please enter a valid 11-digit phone number');
+                return;
+            }
+
+            if (location.length < 5) {
+                e.preventDefault();
+                alert('Please provide a complete location address');
+                return;
+            }
+
+            // Confirm submission
+            if (!confirm('Are you sure you want to submit this blood request?')) {
+                e.preventDefault();
+            }
+        });
+
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+
+        // Disable submit button after click to prevent double submission
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            setTimeout(() => {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            }, 0);
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

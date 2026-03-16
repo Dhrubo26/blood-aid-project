@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Blood Aid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .navbar-brand i {
+            color: #dc3545;
+            margin-right: 10px;
+        }
+
+        .admin-container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #dc3545;
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .stat-info p {
+            color: #666;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-header h4 {
+            font-weight: 700;
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        .section-header i {
+            color: #dc3545;
+            margin-right: 10px;
+        }
+
+        .badge-group {
+            background: #dc3545;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #28a745;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .badge-inactive {
+            background: #6c757d;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 15px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            margin: 0 3px;
+        }
+
+        .btn-delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-view {
+            background: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+
+        .btn-view:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #dc3545;
+        }
+
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #218838;
+        }
+
+        .nav-tabs {
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #666;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: #dc3545;
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            padding: 8px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .page-link:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .page-item.active .page-link {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .message-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .message-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .message-email {
+            color: #dc3545;
+            font-size: 12px;
+        }
+
+        .message-date {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .message-content {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-section {
+                flex-direction: column;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-droplet"></i>
+                <span>BLOOD AID ADMIN</span>
+            </a>
+
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="text-white-50">
+                    <i class="fas fa-user-shield me-2"></i>Admin
+                </span>
+                <a href="/logout" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="admin-container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ donors|length }}</h3>
+                    <p>Total Donors</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ requests|length }}</h3>
+                    <p>Blood Requests</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ donors|selectattr('is_available', 'equalto', true)|list|length }}</h3>
+                    <p>Available Donors</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ messages|length }}</h3>
+                    <p>Messages</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests" type="button">
+                    <i class="fas fa-hand-holding-heart me-2"></i>Blood Requests
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="donors-tab" data-bs-toggle="tab" data-bs-target="#donors" type="button">
+                    <i class="fas fa-users me-2"></i>Donors
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button">
+                    <i class="fas fa-envelope me-2"></i>Contact Messages
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="adminTabsContent">
+            <!-- Blood Requests Tab -->
+            <div class="tab-pane fade show active" id="requests" role="tabpanel">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h4><i class="fas fa-hand-holding-heart"></i>Blood Requests Management</h4>
+                        <div class="filter-section">
+                            <input type="text" id="requestSearch" class="filter-input" placeholder="Search requests...">
+                            <button class="export-btn" onclick="exportRequests()">
+                                <i class="fas fa-download me-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="requestsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Patient Name</th>
+                                    <th>Blood Group</th>
+                                    <th>Location</th>
+                                    <th>Phone</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for request in requests %}
+                                <tr>
+                                    <td>#{{ request.id }}</td>
+                                    <td>{{ request.patient_name }}</td>
+                                    <td><span class="badge-group">{{ request.blood_group }}</span></td>
+                                    <td>{{ request.location }}</td>
+                                    <td>{{ request.phone }}</td>
+                                    <td>{{ request.created_at.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        {% if request.is_active %}
+                                        <span class="badge-active">Active</span>
+                                        {% else %}
+                                        <span class="badge-inactive">Completed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewRequest({{ request.id }})">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn btn-delete" onclick="deleteRequest({{ request.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donors Tab -->
+            <div class="tab-pane fade" id="donors" role="tabpanel">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h4><i class="fas fa-users"></i>Donors Management</h4>
+                        <div class="filter-section">
+                            <input type="text" id="donorSearch" class="filter-input" placeholder="Search donors...">
+                            <select id="bloodGroupFilter" class="filter-input">
+                                <option value="">All Blood Groups</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                            <button class="export-btn" onclick="exportDonors()">
+                                <i class="fas fa-download me-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="donorsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Blood Group</th>
+                                    <th>City</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Last Donation</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donor in donors %}
+                                <tr>
+                                    <td>#{{ donor.id }}</td>
+                                    <td>{{ donor.name }}</td>
+                                    <td>{{ donor.email }}</td>
+                                    <td><span class="badge-group">{{ donor.blood_group }}</span></td>
+                                    <td>{{ donor.city }}</td>
+                                    <td>{{ donor.phone }}</td>
+                                    <td>
+                                        {% if donor.is_available %}
+                                        <span class="badge-active">Available</span>
+                                        {% else %}
+                                        <span class="badge-inactive">Rest Period</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if donor.last_donation_date %}
+                                            {{ donor.last_donation_date.strftime('%d/%m/%Y') }}
+                                        {% else %}
+                                            Never
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewDonor({{ donor.id }})">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        {% if not donor.is_admin %}
+                                        <button class="action-btn btn-delete" onclick="deleteDonor({{ donor.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div class="tab-pane fade" id="messages" role="tabpanel">
+                                 <div class="section-header">
+                        <h4><i class="fas fa-envelope"></i>Contact Messages</h4>
+                        <div class="filter-section">
+                            <input type="text" id="messageSearch" class="filter-input" placeholder="Search messages...">
+                            <button class="export-btn" onclick="exportMessages()">
+                                <i class="fas fa-download me-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="messages-list" id="messagesList">
+                        {% for message in messages %}
+                        <div class="message-card {% if not message.is_read %}border-warning{% endif %}" id="message-{{ message.id }}">
+                            <div class="message-header">
+                                <div>
+                                    <span class="message-name">{{ message.name }}</span>
+                                    <span class="message-email">({{ message.email }})</span>
+                                </div>
+                                <span class="message-date">{{ message.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                            </div>
+                            <div class="message-content">
+                                {{ message.message }}
+                            </div>
+                            <div class="message-actions">
+                                {% if not message.is_read %}
+                                <button class="action-btn btn-view" onclick="markAsRead({{ message.id }})">
+                                    <i class="fas fa-check"></i> Mark as Read
+                                </button>
+                                {% endif %}
+                                <button class="action-btn btn-delete" onclick="deleteMessage({{ message.id }})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                <button class="action-btn btn-view" onclick="replyToMessage('{{ message.email }}')">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Request Modal -->
+    <div class="modal fade" id="viewRequestModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Request Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="requestDetails">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Donor Modal -->
+    <div class="modal fade" id="viewDonorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Donor Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="donorDetails">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality for requests
+        document.getElementById('requestSearch').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('requestsTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length - 1; j++) {
+                    const cell = cells[j];
+                    if (cell && cell.textContent.toLowerCase().includes(searchValue)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                row.style.display = found ? '' : 'none';
+            }
+        });
+
+        // Search functionality for donors
+        document.getElementById('donorSearch').addEventListener('keyup', filterDonors);
+        document.getElementById('bloodGroupFilter').addEventListener('change', filterDonors);
+
+        function filterDonors() {
+            const searchValue = document.getElementById('donorSearch').value.toLowerCase();
+            const bloodGroup = document.getElementById('bloodGroupFilter').value;
+            const table = document.getElementById('donorsTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                const rowBloodGroup = cells[3].textContent.trim();
+
+                let matchesSearch = false;
+                let matchesBlood = !bloodGroup || rowBloodGroup === bloodGroup;
+
+                for (let j = 0; j < cells.length - 1; j++) {
+                    const cell = cells[j];
+                    if (cell && cell.textContent.toLowerCase().includes(searchValue)) {
+                        matchesSearch = true;
+                        break;
+                    }
+                }
+
+                row.style.display = (matchesSearch && matchesBlood) ? '' : 'none';
+            }
+        }
+
+        // Search functionality for messages
+        document.getElementById('messageSearch').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const messages = document.getElementsByClassName('message-card');
+
+            for (let message of messages) {
+                const text = message.textContent.toLowerCase();
+                message.style.display = text.includes(searchValue) ? '' : 'none';
+            }
+        });
+
+        // View Request
+        function viewRequest(id) {
+            fetch(`/api/request/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const modal = new bootstrap.Modal(document.getElementById('viewRequestModal'));
+                    document.getElementById('requestDetails').innerHTML = `
+                        <p><strong>Patient Name:</strong> ${data.patient_name}</p>
+                        <p><strong>Blood Group:</strong> <span class="badge-group">${data.blood_group}</span></p>
+                        <p><strong>Location:</strong> ${data.location}</p>
+                        <p><strong>Phone:</strong> ${data.phone}</p>
+                        <p><strong>Date:</strong> ${data.created_at}</p>
+                        <p><strong>Status:</strong> ${data.is_active ? 'Active' : 'Completed'}</p>
+                    `;
+                    modal.show();
+                });
+        }
+
+        // View Donor
+        function viewDonor(id) {
+            fetch(`/api/donor/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const modal = new bootstrap.Modal(document.getElementById('viewDonorModal'));
+                    document.getElementById('donorDetails').innerHTML = `
+                        <p><strong>Name:</strong> ${data.name}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Blood Group:</strong> <span class="badge-group">${data.blood_group}</span></p>
+                        <p><strong>City:</strong> ${data.city}</p>
+                        <p><strong>Phone:</strong> ${data.phone}</p>
+                        <p><strong>Status:</strong> ${data.is_available ? 'Available' : 'In Rest Period'}</p>
+                        <p><strong>Last Donation:</strong> ${data.last_donation_date || 'Never'}</p>
+                        <p><strong>Registered:</strong> ${data.created_at}</p>
+                    `;
+                    modal.show();
+                });
+        }
+
+        // Delete Request
+        function deleteRequest(id) {
+            if (confirm('Are you sure you want to delete this request?')) {
+                window.location.href = `/delete_request/${id}`;
+            }
+        }
+
+        // Delete Donor
+        function deleteDonor(id) {
+            if (confirm('Are you sure you want to delete this donor? This action cannot be undone.')) {
+                window.location.href = `/delete_user/${id}`;
+            }
+        }
+
+        // Delete Message
+        function deleteMessage(id) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                fetch(`/api/message/${id}`, {
+                    method: 'DELETE'
+                }).then(() => {
+                    document.getElementById(`message-${id}`).remove();
+                });
+            }
+        }
+
+        // Mark Message as Read
+        function markAsRead(id) {
+            fetch(`/mark_message_read/${id}`, {
+                method: 'POST'
+            }).then(() => {
+                const message = document.getElementById(`message-${id}`);
+                message.classList.remove('border-warning');
+                const button = message.querySelector('.btn-view');
+                if (button) button.remove();
+            });
+        }
+
+        // Reply to Message
+        function replyToMessage(email) {
+            window.location.href = `mailto:${email}`;
+        }
+
+        // Export Functions
+        function exportRequests() {
+            const table = document.getElementById('requestsTable');
+            const rows = [];
+
+            for (let i = 0; i < table.rows.length; i++) {
+                const row = table.rows[i];
+                const rowData = [];
+                for (let j = 0; j < row.cells.length - 1; j++) {
+                    rowData.push(row.cells[j].innerText);
+                }
+                rows.push(rowData.join(','));
+            }
+
+            downloadCSV(rows.join('\n'), 'blood_requests.csv');
+        }
+
+        function exportDonors() {
+            const table = document.getElementById('donorsTable');
+            const rows = [];
+
+            for (let i = 0; i < table.rows.length; i++) {
+                const row = table.rows[i];
+                const rowData = [];
+                for (let j = 0; j < row.cells.length - 1; j++) {
+                    rowData.push(row.cells[j].innerText);
+                }
+                rows.push(rowData.join(','));
+            }
+
+            downloadCSV(rows.join('\n'), 'donors.csv');
+        }
+
+        function exportMessages() {
+            const messages = [];
+            const messageCards = document.getElementsByClassName('message-card');
+
+            messages.push('Name,Email,Message,Date,Status');
+
+            for (let card of messageCards) {
+                const name = card.querySelector('.message-name').textContent;
+                const email = card.querySelector('.message-email').textContent.replace(/[()]/g, '');
+                const content = card.querySelector('.message-content').textContent;
+                const date = card.querySelector('.message-date').textContent;
+                const isRead = !card.classList.contains('border-warning');
+
+                messages.push(`"${name}","${email}","${content}","${date}","${isRead ? 'Read' : 'Unread'}"`);
+            }
+
+            downloadCSV(messages.join('\n'), 'messages.csv');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Auto-hide flash messages
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
