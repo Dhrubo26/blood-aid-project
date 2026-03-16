@@ -17,7 +17,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "blood_donation_security_key_2026")
 
-# Database URL Fix
 database_url = os.getenv("DATABASE_URL")
 if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
@@ -26,7 +25,6 @@ local_db = 'mysql+pymysql://root:123456@localhost/blood_bank_db?charset=utf8mb4'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url or local_db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# SQLAlchemy Engine Options (Pool Management)
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_size": 10,
     "max_overflow": 20,
@@ -38,16 +36,12 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
 
-# Gemini AI Configuration
 API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# Session Cleanup (To prevent connection leaks)
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
-
-# ==================== DATABASE MODELS ====================
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -94,8 +88,6 @@ class PushSubscription(db.Model):
     subscription_json = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.relationship('User', backref='push_subscriptions')
-
-# ==================== ROUTES ====================
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -357,8 +349,6 @@ def debug_info():
     }
     return jsonify(info)
 
-# ==================== SOCKET.IO EVENT HANDLERS ====================
-
 active_donors = {}
 
 @socketio.on('connect')
@@ -440,8 +430,6 @@ def update_recipient_location(data):
     room = f"request_{request_id}"
     emit('recipient_location_updated', {'lat': lat, 'lng': lng}, room=room)
 
-# ==================== CREATE ADMIN FUNCTION ====================
-
 def create_admin():
     with app.app_context():
         admin = User.query.filter_by(email='admin@bloodaid.com').first()
@@ -461,16 +449,6 @@ def create_admin():
             print('   Email: admin@bloodaid.com')
             print('   Password: admin123')
 
-# ==================== MAIN ====================
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        create_admin()
-    
     port = int(os.environ.get('PORT', 5001))
-    print("\n🚀 Blood Aid app is running with Gevent!")
-    print(f"   Access at: http://0.0.0.0:{port}")
-    print("   Admin login: admin@bloodaid.com / admin123\n")
-    
     socketio.run(app, host='0.0.0.0', port=port, debug=True)
