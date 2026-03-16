@@ -11,24 +11,28 @@ from flask_bcrypt import Bcrypt
 import google.generativeai as genai
 from flask_socketio import SocketIO, emit, join_room
 from geopy.distance import geodesic
-import socket
-import pymysql
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "blood_donation_security_key_2026")
 
-
-local_db = 'mysql+pymysql://root:123456@localhost/blood_bank_db?charset=utf8mb4'
+# Database URL Fix
 database_url = os.getenv("DATABASE_URL")
-
 if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
+local_db = 'mysql+pymysql://root:123456@localhost/blood_bank_db?charset=utf8mb4'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url or local_db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# SQLAlchemy Engine Options (Pool Management)
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_size": 10,
+    "max_overflow": 20,
+    "pool_recycle": 1800,
+    "pool_pre_ping": True
+}
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -38,13 +42,22 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
 API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# Create database tables automatically
-with app.app_context():
-    try:
-        db.create_all()
-        print("Database tables created successfully!")
-    except Exception as e:
-        print(f"Error creating database: {e}")
+# Database Setup Function
+def init_db():
+    with app.app_context():
+        try:
+            db.create_all()
+            print("✓ Database tables created successfully!")
+        except Exception as e:
+            print(f"Error creating database: {e}")
+
+init_db()
+
+# Session Cleanup (To prevent connection leaks)
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -78,10 +91,14 @@ class BloodRequest(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # Auto-update donor availability (3 months rest period)
-    three_months_ago = datetime.now() - timedelta(days=90)
-    User.query.filter(User.last_donation_date <= three_months_ago).update({User.is_available: True})
-    db.session.commit()
+    # Handling potential transaction/table errors
+    try:
+        three_months_ago = datetime.now() - timedelta(days=90)
+        User.query.filter(User.last_donation_date <= three_months_ago).update({User.is_available: True})
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()  # Rollback as per SQLAlchemy documentation
+        print(f"Update error: {e}")
 
     donors = []
     if request.method == 'POST':
