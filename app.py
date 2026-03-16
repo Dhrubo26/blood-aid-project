@@ -14,7 +14,6 @@ from geopy.distance import geodesic
 import socket
 import pymysql
 
-# ২. Environment Variables লোড করা
 load_dotenv()
 
 app = Flask(__name__)
